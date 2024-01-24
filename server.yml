@@ -1,0 +1,15 @@
+service: serverless-graphql
+# The `provider` block defines where your service will be deployed
+provider:
+name: aws
+  runtime: nodejs6.10 # set node.js runtime
+  memorySize: 128 # set the maximum memory of the Lambdas in Megabytes
+  timeout: 10 # the timeout is 10 seconds (default is 6 seconds)
+  stage: dev # setting the env stage to dev, this will be visible in the routes
+  region: us-east-1
+functions:
+  login :
+    handler : 
+  
+plugins:
+- serverless-offline
