@@ -4,7 +4,7 @@ const sequelize = require('../../../db');
 
 const User = sequelize.define('users', {
     // Define model attributes
-    userName: {
+    user_name: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,

@@ -3,12 +3,12 @@ const { commonMessages, statusCodes } = require('../../helpers/constants');
 
 exports.signupValidation = ( _req , _res , _next )=>{
 
-    const { userName, email, password, confirmPassword } = _req.body
+    const { user_name, email, password, confirmPassword } = _req.body
 
-    if (!userName) {
+    if (!user_name) {
         return _res.status(statusCodes['VALIDATION_ERR']).json({
             status: 'validation_error',
-            message: commonMessages.IS_REQUIRED('userName')
+            message: commonMessages.IS_REQUIRED('user_name')
         });
     }
     if (!email) {

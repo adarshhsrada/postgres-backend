@@ -4,8 +4,17 @@ const bcrypt = require('bcrypt');
 exports.getUser = (req, res) => {
     console.log("req.query.userName==>>", req.query.userName);
 
+    const { userName }  = req.query
+
+    if (!userName) {
+        return res.status(statusCodes['VALIDATION_ERR']).json({
+            status: 'error',
+            message: commonMessages.IS_REQUIRED('userName')
+        });
+    }
+
     userModel.sequelize.query("SELECT * FROM users WHERE userName = :userName", {
-        replacements: { userName: req.query.userName },
+        replacements: { userName: userName },
         type: userModel.sequelize.QueryTypes.SELECT // Add this line to ensure it's treated as a SELECT query
     })
         .then((response) => {
@@ -29,18 +38,18 @@ exports.getUser = (req, res) => {
 
             return res.status(statusCodes['SERVER_ERROR']).json({
                 status: 'error',
-                message: commonMessages.SERVER_ERROR
+                message: err.message || commonMessages.SERVER_ERROR
             });
         });
 };
 exports.signup = async (req, res) => {
     console.error("req.body==>>", req.body)
-    const { userName, email, password } = req.body
+    const { user_name, email, password } = req.body
 
     const hashedPass = await bcrypt.hash(password, 10);
 
     try {
-        const savedData = await userModel.create({ userName, email, password: hashedPass, token: null })
+        const savedData = await userModel.create({user_name : user_name, email, password: hashedPass, token: null })
         return res.status(statusCodes['SUCCESS']).json({
             status: 'success',
             message: 'User signup successfully',
@@ -48,9 +57,14 @@ exports.signup = async (req, res) => {
         });
     } catch (err) {
         console.error("err.message===>>", err)
+        let message = ""
+
+        if (err.errors && err.errors.length) message = err.errors[0].message
+        else message = err.message
+
         return res.status(statusCodes['SERVER_ERROR']).json({
             status: 'error',
-            message: err.message || commonMessages.SERVER_ERROR,
+            message: message || commonMessages.SERVER_ERROR,
         });
     }
 }
